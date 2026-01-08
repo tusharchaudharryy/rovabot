@@ -14,35 +14,31 @@ class TableVisualizer:
         page_num = extraction_result['meta']['page']
         page = self.doc[page_num]
         
-        # Draw Grid Lines (Green)
         cols = extraction_result['structure']['col_boundaries']
         rows = extraction_result['structure']['row_boundaries']
         
         shape = page.new_shape()
-        shape.finish() # Prepare styling
+        shape.finish()
         
-        # Draw Columns
         for x in cols:
             p1 = fitz.Point(x, rows[0])
             p2 = fitz.Point(x, rows[-1])
             shape.draw_line(p1, p2)
         
-        # Draw Rows
         for y in rows:
             p1 = fitz.Point(cols[0], y)
             p2 = fitz.Point(cols[-1], y)
             shape.draw_line(p1, p2)
             
-        shape.finish(color=(0, 1, 0), width=0.5) # Green lines
+        shape.finish(color=(0, 1, 0), width=0.5)
         shape.commit()
 
-        # Draw Detected Cells (Red Bounding Boxes)
         shape = page.new_shape()
         for cell in extraction_result['cells']:
             rect = fitz.Rect(cell['bbox'])
             shape.draw_rect(rect)
         
-        shape.finish(color=(1, 0, 0), width=0.5) # Red outlines
+        shape.finish(color=(1, 0, 0), width=0.5)
         shape.commit()
         
         self.doc.save(output_path)
